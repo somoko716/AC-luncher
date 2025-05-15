@@ -1,0 +1,161 @@
+<html>
+    
+    <link rel="icon" type="image/png" href="logo.jpg">
+
+    <head>
+
+
+
+        <body>
+
+
+
+            <!DOCTYPE html>
+            <html lang="fa">
+            <head>
+              <meta charset="UTF-8">
+              <title>سطل زباله با درگ اند دراپ</title>
+              <style>
+                body {
+                  font-family: sans-serif;
+                  direction: rtl;
+                  text-align: center;
+                  background-color: #f0f0f0;
+                  padding: 30px;
+                }
+            
+                .warnings {
+                  display: flex;
+                  justify-content: center;
+                  gap: 20px;
+                  flex-wrap: wrap;
+                }
+            
+                .warning {
+                  background-color: #ffe0e0;
+                  border: 1px solid #ff9999;
+                  padding: 15px;
+                  width: 200px;
+                  border-radius: 8px;
+                  cursor: grab;
+                  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                }
+            
+                #trash {
+                  margin-top: 40px;
+                  width: 120px;
+                  height: 120px;
+                  background-image: url('https://cdn-icons-png.flaticon.com/512/565/565491.png');
+                  background-size: cover;
+                  background-repeat: no-repeat;
+                  margin-left: auto;
+                  margin-right: auto;
+                  border: 2px dashed #999;
+                  border-radius: 10px;
+                }
+            
+                #trash.drag-over {
+                  border-color: red;
+                  background-color: #ffeeee;
+                }
+            
+                h2 {
+                  color: #444;
+                }
+            
+                #message {
+                  margin-top: 20px;
+                  color: green;
+                  font-weight: bold;
+                  display: none;
+                }
+              </style>
+            </head>
+            <body>
+            
+              <h2>🚨 هشدارها را بکشید و داخل سطل بیندازید</h2>
+            
+              <div class="warnings" id="warningsContainer"></div>
+            
+              <div id="trash" ondragover="event.preventDefault()"></div>
+              <div id="message">✅ پیام حذف شد!</div>
+            
+              <!-- صدا برای حذف -->
+              <audio id="deleteSound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+            
+              <script>
+                // پیام‌های رندوم برای هشدار
+                const warningsData = [
+                  ["⚠️ هشدار شماره ۱", "⚠️ مشکل در اتصال به شبکه", "⚠️ رمز عبور ضعیف"],
+                  ["⚠️ اتصال اینترنت قطع شده", "⚠️ فضایی برای ذخیره‌سازی ندارید", "⚠️ خطای داخلی سیستم"],
+                  ["⚠️ فضای ذخیره‌سازی کم است", "⚠️ اعتبار کد شما به پایان رسیده", "⚠️ نیاز به بروزرسانی برنامه دارید"]
+                ];
+            
+                const warningsContainer = document.getElementById("warningsContainer");
+                const trash = document.getElementById("trash");
+                const message = document.getElementById("message");
+                const deleteSound = document.getElementById("deleteSound");
+            
+                // انتخاب رندوم پیام‌ها از آرایه
+                function randomizeWarnings() {
+                  warningsData.forEach(warningSet => {
+                    const randomMessage = warningSet[Math.floor(Math.random() * warningSet.length)];
+            
+                    // ساخت و نمایش پیام هشدار
+                    const warningElement = document.createElement("div");
+                    warningElement.className = "warning";
+                    warningElement.draggable = true;
+                    warningElement.textContent = randomMessage;
+                    warningsContainer.appendChild(warningElement);
+            
+                    warningElement.addEventListener("dragstart", function(e) {
+                      e.dataTransfer.setData("text/plain", this.textContent);
+                    });
+                  });
+                }
+            
+                trash.addEventListener("dragover", function(e) {
+                  e.preventDefault();
+                  trash.classList.add("drag-over");
+                });
+            
+                trash.addEventListener("dragleave", function() {
+                  trash.classList.remove("drag-over");
+                });
+            
+                trash.addEventListener("drop", function(e) {
+                  e.preventDefault();
+                  const text = e.dataTransfer.getData("text/plain");
+                  const element = [...warningsContainer.children].find(item => item.textContent === text);
+                  if (element) {
+                    element.remove(); // حذف هشدار
+                    trash.classList.remove("drag-over");
+            
+                    // پخش صدا
+                    deleteSound.play();
+            
+                    // نمایش پیام "حذف شد"
+                    message.style.display = "block";
+                    setTimeout(() => {
+                      message.style.display = "none"; // مخفی شدن پیام بعد از 2 ثانیه
+                    }, 2000);
+                  }
+                });
+            
+                // اجرای تابع رندوم کردن پیام‌ها هنگام بارگذاری صفحه
+                randomizeWarnings();
+              </script>
+            
+            </body>
+            </html>
+              
+
+
+
+        </body>
+
+
+    </head>
+
+
+</html>
