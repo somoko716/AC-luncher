@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fa">
+
+<div style="
+  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+  padding: 30px;
+  border-radius: 15px;
+  color: white;
+  font-family: sans-serif;
+  text-align: center;
+  margin: 20px auto;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+">
+  <h1 style="margin-bottom: 10px;">🎓 کلاس آنلاین ACL</h1>
+  <p style="font-size: 18px;">خوش آمدید! لطفاً نقش خود را انتخاب کرده و وارد کلاس شوید.</p>
+</div>
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>کلاس آنلاین</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-image: url('https://i.imgur.com/1OeXgkI.jpg'); /* پس‌زمینه کلاس */
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+      direction: rtl;
+    }
+    #login, #classroom {
+      margin-top: 30px;
+    }
+    .hidden {
+      display: none;
+    }
+    canvas {
+      border: 2px solid #fff;
+      background-color: #fff;
+    }
+    #chat-box {
+      width: 300px;
+      height: 200px;
+      margin: auto;
+      background: rgba(255,255,255,0.8);
+      color: #000;
+      overflow-y: scroll;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    #chat-input {
+      width: 60%;
+    }
+    #acl-logo {
+      font-size: 24px;
+      font-weight: bold;
+      animation: fadeIn 2s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    #settings-menu {
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      padding: 10px;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="login">
+    <h2>ورود به کلاس آنلاین</h2>
+    <input type="text" id="username" placeholder="نام خود را وارد کنید">
+    <br><br>
+    <input type="password" id="admin-pass" placeholder="رمز ورود مدیر">
+    <br><br>
+    <button onclick="login(false)">ورود دانش‌آموز</button>
+    <button onclick="login(true)">ورود مدیر</button>
+  </div>
+
+  <div id="classroom" class="hidden">
+    <div id="acl-logo">🎓 ACL</div>
+    <div id="student-list"></div>
+
+    <h3>بخش چت</h3>
+    <div id="chat-box"></div>
+    <input id="chat-input" type="text" placeholder="پیام خود را بنویسید">
+    <button onclick="sendChat()">ارسال</button>
+
+    <h3>تخته سفید</h3>
+    <canvas id="board" width="400" height="300"></canvas>
+    <br>
+    <button onclick="clearBoard()">پاک‌کردن تخته</button>
+
+    <h3>تنظیمات</h3>
+    <button onclick="toggleSettings()">تنظیمات</button>
+    <div id="settings-menu">
+      <p>اینجا تنظیمات نمایش داده می‌شود.</p>
+      <button onclick="logout()">خروج</button>
+    </div>
+  </div>
+
+  <script>
+    let isAdmin = false;
+    const loginDiv = document.getElementById("login");
+    const classroom = document.getElementById("classroom");
+    const chatBox = document.getElementById("chat-box");
+    const board = document.getElementById("board");
+    const ctx = board.getContext("2d");
+    let drawing = false;
+
+    function login(admin) {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("admin-pass").value;
+
+      if (admin && pass !== "admin123") {
+        alert("رمز مدیر نادرست است");
+        return;
+      }
+
+      isAdmin = admin;
+      loginDiv.classList.add("hidden");
+      classroom.classList.remove("hidden");
+    }
+
+    function sendChat() {
+      const input = document.getElementById("chat-input");
+      const msg = input.value.trim();
+      if (msg) {
+        const p = document.createElement("p");
+        p.textContent = msg;
+        chatBox.appendChild(p);
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
+
+    board.addEventListener("mousedown", (e) => {
+      if (!isAdmin) return;
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
+    });
+
+    board.addEventListener("mousemove", (e) => {
+      if (!drawing || !isAdmin) return;
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+    });
+
+    board.addEventListener("mouseup", () => {
+      if (isAdmin) drawing = false;
+    });
+
+    function clearBoard() {
+      if (isAdmin) ctx.clearRect(0, 0, board.width, board.height);
+    }
+
+    function toggleSettings() {
+      const menu = document.getElementById("settings-menu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    function logout() {
+      location.reload();
+    }
+  </script>
+</body>
+</html>
