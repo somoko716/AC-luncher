@@ -1,0 +1,127 @@
+<html>
+    <link rel="icon" type="image/png" href="logo.jpg">
+    <head>
+
+
+        <body>
+
+  
+
+            <!DOCTYPE html>
+            <html lang="fa">
+            <head>
+              <meta charset="UTF-8">
+              <title>صندوق پیام‌ها با حذف</title>
+              <style>
+                body {
+                  font-family: sans-serif;
+                  direction: rtl;
+                  max-width: 600px;
+                  margin: auto;
+                  padding: 20px;
+                }
+                .message {
+                  border: 1px solid #ccc;
+                  padding: 10px;
+                  margin: 10px 0;
+                  border-radius: 5px;
+                  position: relative;
+                }
+                .message h4 {
+                  margin: 0 0 5px;
+                  color: #007bff;
+                }
+                .message p {
+                  margin: 0;
+                }
+                .delete-btn {
+                  position: absolute;
+                  top: 10px;
+                  left: 10px;
+                  background-color: #e74c3c;
+                  color: white;
+                  border: none;
+                  padding: 5px 10px;
+                  border-radius: 3px;
+                  cursor: pointer;
+                }
+                .delete-btn:hover {
+                  background-color: #c0392b;
+                }
+              </style>
+            </head>
+            <body>
+              <h2>📬 پیام‌های من</h2>
+            
+              <div id="inbox"></div>
+            
+              <hr>
+            
+              <h3>➕ افزودن پیام جدید</h3>
+              <form id="messageForm">
+                <label>عنوان:</label><br>
+                <input type="text" id="subject" required><br><br>
+                <label>متن پیام:</label><br>
+                <textarea id="content" rows="4" required></textarea><br><br>
+                <button type="submit">ارسال پیام</button>
+              </form>
+            
+              <script>
+                // بارگذاری پیام‌ها
+                function loadMessages() {
+                  const inbox = document.getElementById("inbox");
+                  inbox.innerHTML = "";
+                  const messages = JSON.parse(localStorage.getItem("messages") || "[]");
+            
+                  if (messages.length === 0) {
+                    inbox.innerHTML = "<p>هیچ پیامی موجود نیست.</p>";
+                    return;
+                  }
+            
+                  messages.forEach((msg, index) => {
+                    const div = document.createElement("div");
+                    div.className = "message";
+                    div.innerHTML = `
+                      <h4>${msg.subject}</h4>
+                      <p>${msg.content}</p>
+                      <button class="delete-btn" onclick="deleteMessage(${index})">🗑 حذف</button>
+                    `;
+                    inbox.appendChild(div);
+                  });
+                }
+            
+                // حذف پیام
+                function deleteMessage(index) {
+                  const messages = JSON.parse(localStorage.getItem("messages") || "[]");
+                  messages.splice(index, 1); // حذف از آرایه
+                  localStorage.setItem("messages", JSON.stringify(messages));
+                  loadMessages(); // بازخوانی لیست
+                }
+            
+                // افزودن پیام جدید
+                document.getElementById("messageForm").addEventListener("submit", function(e) {
+                  e.preventDefault();
+                  const subject = document.getElementById("subject").value;
+                  const content = document.getElementById("content").value;
+            
+                  const newMessage = { subject, content };
+                  const messages = JSON.parse(localStorage.getItem("messages") || "[]");
+                  messages.unshift(newMessage);
+                  localStorage.setItem("messages", JSON.stringify(messages));
+            
+                  document.getElementById("messageForm").reset();
+                  loadMessages();
+                });
+            
+                loadMessages();
+              </script>
+            </body>
+            </html>
+            
+
+        </body>
+
+
+    </head>
+
+</html>
