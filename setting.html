@@ -1,0 +1,89 @@
+<html>
+
+<link rel="icon" type="image/png" href="logo.jpg">
+
+<head>
+    <!DOCTYPE html>
+    <html>
+    <body bgcolor='gray'>
+    </body>
+    </html>
+<body>
+<center>
+    <h1>setting</h1>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+
+    <!DOCTYPE html>
+    <html lang="fa">
+    <head>
+      <meta charset="UTF-8">
+      <title>تنظیمات بازی</title>
+    </head>
+    <body>
+      <h2>تنظیمات بازی</h2>
+    
+      <form id="gameSettingsForm">
+        <label for="playerName">نام بازیکن:</label>
+        <input type="text" id="playerName"><br><br>
+    
+        <label for="difficulty">درجه سختی:</label>
+        <select id="difficulty">
+          <option value="easy">30fps</option>
+          <option value="medium">60fps</option>
+          <option value="hard">120fps</option>
+        </select><br><br>
+    
+        <label>
+          <input type="checkbox" id="soundOn"> صدا فعال باشد
+        </label><br><br>
+    
+        <button type="submit">ذخیره تنظیمات</button>
+      </form>
+    
+      <p id="statusMessage"></p>
+    
+      <script>
+        // بارگذاری تنظیمات قبلی در شروع
+        window.onload = function() {
+          const name = localStorage.getItem('playerName');
+          const difficulty = localStorage.getItem('difficulty');
+          const soundOn = localStorage.getItem('soundOn') === 'true';
+    
+          if (name) document.getElementById('playerName').value = name;
+          if (difficulty) document.getElementById('difficulty').value = difficulty;
+          document.getElementById('soundOn').checked = soundOn;
+        };
+    
+        // ذخیره تنظیمات هنگام ارسال فرم
+        document.getElementById('gameSettingsForm').addEventListener('submit', function(e) {
+          e.preventDefault(); // جلوگیری از reload صفحه
+    
+          localStorage.setItem('playerName', document.getElementById('playerName').value);
+          localStorage.setItem('difficulty', document.getElementById('difficulty').value);
+          localStorage.setItem('soundOn', document.getElementById('soundOn').checked);
+    
+          document.getElementById('statusMessage').textContent = "تنظیمات بازی ذخیره شد!";
+        });
+      </script>
+    </body>
+    </html>
+    
+
+
+
+
+
+
+
+
+
+</center>
+</body>
+
+</head>
+</html>
